@@ -20,22 +20,24 @@ def drop_columns(dbname, password):
 
     # drop columns from general_table
     sql = '''ALTER TABLE copy_general_table 
-                DROP "batch_transaction_id"
-                DROP "transaction_date"
-                DROP "card_posting_date"
-                DROP "original_amount"
-                DROP "original_currency"
-                DROP "g_l_account"
-                DROP "g_l_account_description"
-                DROP "cost_centre_wbs_element_order"
-                DROP "cost_centre_wbs_element_order_description"
-                DROP "merchant_type"
-                DROP "merchant_type_description"
+                DROP "batch_transaction_id",
+                DROP "transaction_date",
+                DROP "card_posting_date",
+                DROP "original_amount",
+                DROP "original_currency",
+                DROP "g_l_account",
+                DROP "g_l_account_description",
+                DROP "cost_centre_wbs_element_order",
+                DROP "cost_centre_wbs_element_order_description",
+                DROP "merchant_type",
+                DROP "merchant_type_description",
                 DROP "purpose"
                                             '''
 
     cursor.execute(sql)
     print("columns droped successfully........")
+
+
 
     cursor.execute('grant select on table general_table to public')
     cursor.execute('grant select on table division_table to public')    
