@@ -123,7 +123,5 @@ def load_data():
      main_table()
 
 
-file_extraction()
-transform_data()
-load_data()
+
 
