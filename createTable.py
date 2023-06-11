@@ -1,4 +1,4 @@
-create tables function:
+
 #libraries
 import os
 import numpy as np
