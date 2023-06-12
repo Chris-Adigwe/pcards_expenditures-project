@@ -357,8 +357,7 @@ def load_fact():
         merchant_name,
         merchant_type_mcc,
         merchant_type_description,
-        purpose,
-        date_downloaded
+        purpose
     FROM fact
 ''')
     
