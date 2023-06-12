@@ -122,7 +122,7 @@ def engine():
 
 def last_updated():
     conn = engine()
-    query1 = ''' SELECT MAX(transaction_date) FROM fact'''
+    query1 = ''' SELECT MAX(transaction_date) FROM main_table'''
     # Execute the query and fetch the results
     with conn.connect() as con:
         df = pd.DataFrame(con.execute(query1)).values.tolist()[0][0]
@@ -246,5 +246,3 @@ def create_table2():
     con.close()
 
     print('Tables created')
-
-
