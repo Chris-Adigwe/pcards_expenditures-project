@@ -357,7 +357,8 @@ def load_fact():
         merchant_name,
         merchant_type_mcc,
         merchant_type_description,
-        purpose
+        purpose,
+        date_downloaded
     FROM fact
 ''')
     
@@ -367,5 +368,78 @@ def load_fact():
     cur.close()
     conn.close()
     delete_files('data/fact')
+
+    print('data successfully FACT loaded to table')
+
+
+
+def main_table():
+    conn = get_database_conn()
+    cur = conn.cursor()
+
+
+    cur.execute('''
+    INSERT INTO main_table(
+                batch_transaction_id,
+                transaction_date,
+                card_posting_date,
+                transaction_amount,
+                date_downloaded,
+                division_id,
+                account_id,
+                merchant_id,
+                cost_centre_id,
+                trans_currency_id
+    )
+    SELECT 
+                fact.batch_transaction_id,
+                fact.transaction_date,
+                fact.card_posting_date,
+                fact.transaction_amount,
+                fact.date_downloaded,
+                division_dim.division_id,
+                account_dim.account_id,
+                merchant_dim.merchant_id,
+                cost_centre_dim.cost_centre_id,
+                currency_dim.trans_currency_id
+    FROM fact, division_dim, account_dim, merchant_dim, cost_centre_dim, currency_dim
+
+    WHERE fact.division = division_dim.division
+    AND   fact.g_l_account = account_dim.g_l_account 
+    AND   fact.g_l_account_description  = account_dim.g_l_account_description 
+    AND   fact.transaction_currency = currency_dim.transaction_currency
+    AND   fact.merchant_name = merchant_dim.merchant_name
+    AND   fact.merchant_type_mcc = merchant_dim.merchant_type_mcc
+    AND   fact.merchant_type_description =  merchant_dim.merchant_type_description  
+    AND   fact.cost_centre_wbs_element_order = cost_centre_dim.cost_centre_wbs_element_order
+    AND   fact.cost_centre_wbs_element_order_description = cost_centre_dim.cost_centre_wbs_element_order_description
+    AND  fact.original_currency = cost_centre_dim.original_currency
+    AND fact.original_amount   = cost_centre_dim.original_amount
+    AND  fact.purpose  = cost_centre_dim.purpose
+
+    EXCEPT
+    SELECT
+                batch_transaction_id,
+                transaction_date,
+                card_posting_date,
+                transaction_amount,
+                date_downloaded,
+                division_id,
+                account_id,
+                merchant_id,
+                cost_centre_id,
+                trans_currency_id
+    FROM main_table
+
+   
+''')
+    
+    
+    
+
+
+    conn.commit()
+    cur.close()
+    conn.close()
 
     print('data successfully FACT loaded to table')
